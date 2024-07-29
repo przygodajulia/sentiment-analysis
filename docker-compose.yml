@@ -1,6 +1,7 @@
 version: '3'
 
 services:
+
   # Spark services
   spark-master:
     image: bitnami/spark:latest
@@ -11,7 +12,7 @@ services:
     networks:
       - spark-airflow-network
     env_file:
-      - ./aws.env  # Include aws.env for AWS credentials
+      - ./aws.env
     environment:
       - SPARK_MODE=master
     volumes:
@@ -26,14 +27,14 @@ services:
     networks:
       - spark-airflow-network
     env_file:
-      - ./aws.env  # Include aws.env for AWS credentials
+      - ./aws.env
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
       - SPARK_WORKER_MEMORY=1G
       - SPARK_WORKER_CORES=1
     volumes:
-      - ./jobs:/opt/bitnami/spark/jobs  # Mount the jobs folder
+      - ./jobs:/opt/bitnami/spark/jobs
 
   # Airflow services
   postgres:
@@ -60,8 +61,8 @@ services:
       - redis
       - airflow-init
     env_file:
-      - ./airflow.env  # Use your existing airflow.env file for Airflow configurations
-      - ./aws.env      # Include aws.env for AWS credentials
+      - ./airflow.env 
+      - ./aws.env    
     ports:
       - "8081:8080"
     networks:
@@ -81,8 +82,8 @@ services:
       - redis
       - airflow-webserver
     env_file:
-      - ./airflow.env  # Use your existing airflow.env file for Airflow configurations
-      - ./aws.env      # Include aws.env for AWS credentials
+      - ./airflow.env  
+      - ./aws.env    
     networks:
       - spark-airflow-network
     command: scheduler
@@ -100,8 +101,8 @@ services:
       - redis
       - airflow-webserver
     env_file:
-      - ./airflow.env  # Use your existing airflow.env file for Airflow configurations
-      - ./aws.env      # Include aws.env for AWS credentials
+      - ./airflow.env  
+      - ./aws.env     
     networks:
       - spark-airflow-network
     command: celery worker
@@ -118,8 +119,8 @@ services:
       - postgres
       - redis
     env_file:
-      - ./airflow.env  # Use your existing airflow.env file for Airflow configurations
-      - ./aws.env      # Include aws.env for AWS credentials
+      - ./airflow.env
+      - ./aws.env      
     entrypoint: /bin/bash -c "airflow db init && airflow users create --username admin --password admin --firstname Airflow --lastname Admin --role Admin --email admin@example.com"
     networks:
       - spark-airflow-network

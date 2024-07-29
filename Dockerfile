@@ -1,9 +1,7 @@
 FROM apache/airflow:2.4.1
 
-# Switch to root user to install Java and other packages
-USER root
-
 # Update package list, install Java, procps, and Python packages
+USER root
 RUN apt-get update && \
     apt-get install -y \
         python3-pip \
@@ -18,10 +16,9 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Switch back to the airflow user
-USER airflow
 
-# Install Python packages for the airflow user (optional, if needed)
+# Install Python packages for the airflow user
+USER airflow
 RUN pip install \
         boto3 \
         pyspark \
